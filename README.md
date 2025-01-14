@@ -1,10 +1,10 @@
-# Mukara: A Deep Learning-Based Model for Interurban Highway Traffic Volume Prediction Using External Socioeconomic Drivers
+# Mukara: A Deep Learning Model for Interurban Highway Traffic Volume Prediction Using External Socioeconomic Drivers
 
 ![Architecture of Mukara](mukara.png)
 
 This repository contains the TensorFlow implementation of **Mukara**, as described in the following paper:
 
-- Yue Li, Shujuan Chen, Ying Jin. _Mukara: A Deep Learning-Based Model for Interurban Highway Traffic Volume Prediction Using External Socioeconomic Drivers_
+- Y L, SC, YJ. _Mukara: A Deep Learning Model for Interurban Highway Traffic Volume Prediction Using External Socioeconomic Drivers_
 
 ---
 
@@ -97,8 +97,8 @@ This repository contains the TensorFlow implementation of **Mukara**, as describ
 If you find this repository useful for your research, please cite our paper:
    ```bibtex
    @article{mukara2025,
-   author    = {Yue Li and Shujuan Chen and Ying Jin},
-   title     = {Mukara: A Deep Learning-Based Model for Interurban Highway Traffic Volume Prediction Using External Socioeconomic Drivers},
+   author    = {YL and SC and YJ},
+   title     = {Mukara: A Deep Learning Model for Interurban Highway Traffic Volume Prediction Using External Socioeconomic Drivers},
    journal   = {To be updated with journal information},
    year      = {2025},
    }
