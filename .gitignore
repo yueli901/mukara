@@ -24,6 +24,7 @@ __pycache__/
 *.txt
 *.gpkg
 *.kmz
+*.cfg
 
 *.h5
 *.json
@@ -36,5 +37,5 @@ __pycache__/
 *.log
 
 config_template_hyperparams.py
-**/employment_tensor_visualization.png
-**/population_tensor_visualization.png
+*.png
+!mukara.png

@@ -4,7 +4,7 @@
 
 This repository contains the TensorFlow implementation of **Mukara**, as described in the following paper:
 
-- Y L, SC, YJ. _Mukara: A Deep Learning Model for Interurban Highway Traffic Volume Prediction Using External Socioeconomic Drivers_
+- YL, SC, YJ. _Mukara: A Deep Learning Model for Interurban Highway Traffic Volume Prediction Using External Socioeconomic Drivers_
 
 ---
 
@@ -30,6 +30,7 @@ This repository contains the TensorFlow implementation of **Mukara**, as describ
 ---
 
 ## Data Description
+Click [here](https://pan.baidu.com/s/1pctoSL5Yor4JxnGeDt9-_g?pwd=b69w) to download the data.
 
 ### Highway Network
 - **Files**:
