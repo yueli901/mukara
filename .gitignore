@@ -39,3 +39,4 @@ __pycache__/
 config_template_hyperparams.py
 *.png
 !mukara.png
+!figures/**/*.png
