@@ -7,6 +7,7 @@ node_modules/
 # Ignore Python compiled files
 *.pyc
 __pycache__/
+.ipynb_checkpoints/
 
 # Ignore log files
 # *.log
@@ -28,6 +29,7 @@ __pycache__/
 
 *.h5
 *.json
+*.pdf
 
 *.csv
 *.xlsx
@@ -35,8 +37,26 @@ __pycache__/
 *.pbf
 *.html
 *.log
+*.baiduyun.uploading.cfg
+
+# training outputs
+param/
+eval/logs/
+
+# LaTeX build artifacts
+manuscript/*.tex
+manuscript/*.pdf
+manuscript/*.aux
+manuscript/*.bbl
+manuscript/*.blg
+manuscript/*.fdb_latexmk
+manuscript/*.fls
+manuscript/*.lof
+manuscript/*.lot
+manuscript/*.out
+manuscript/*.toc
 
 config_template_hyperparams.py
 *.png
-!mukara.png
-!figures/**/*.png
+!manuscript/mukara.png
+!manuscript/framework.pdf

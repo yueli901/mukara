@@ -1,13 +1,23 @@
-import os
-import re
-import pandas as pd
-import numpy as np
+"""Utilities for parsing Mukara training logs into tabular metrics."""
 
-def extract_metrics(log_path):
-    """
-    A function to read the log file and extract metrics
-    """
-    # Initialize empty lists to store data
+from pathlib import Path
+import re
+import numpy as np
+import pandas as pd
+
+
+EPOCH_STEP_PATTERN = re.compile(r"Epoch (\d+), Step (\d+)")
+TRAIN_PATTERN = re.compile(r"Train Loss: GEH: ([\\d.]+|nan), MAE: ([\\d.]+|nan)")
+VALID_PATTERN = re.compile(r"Valid Loss: GEH: ([\\d.]+|nan), MAE: ([\\d.]+|nan)")
+
+
+def _to_float(value: str) -> float:
+    """Convert metric strings to floats, preserving NaN values."""
+    return float(value) if value != "nan" else np.nan
+
+
+def extract_metrics(log_path: str | Path) -> pd.DataFrame:
+    """Read a training log and return epoch/step-level train/validation metrics."""
     epochs = []
     steps = []
     train_geh = []
@@ -15,39 +25,31 @@ def extract_metrics(log_path):
     valid_geh = []
     valid_mae = []
 
-    # Regular expressions to capture the data from the log
-    epoch_step_pattern = re.compile(r'Epoch (\d+), Step (\d+)')
-    train_pattern = re.compile(r'Train Loss: GEH: ([\d.]+|nan), MAE: ([\d.]+|nan)')
-    valid_pattern = re.compile(r'Valid Loss: GEH: ([\d.]+|nan), MAE: ([\d.]+|nan)')
+    with Path(log_path).open("r", encoding="utf-8") as file:
+        for line in file:
+            train_match = TRAIN_PATTERN.search(line)
+            valid_match = VALID_PATTERN.search(line)
 
-    # Reading the log file
-    with open(log_path, 'r') as f:
-        for line in f:
-            train_match = train_pattern.search(line)
-            valid_match = valid_pattern.search(line)
-            
             if train_match:
-                train_geh.append(float(train_match.group(1)) if train_match.group(1) != 'nan' else np.nan)
-                train_mae.append(float(train_match.group(2)) if train_match.group(2) != 'nan' else np.nan)
+                train_geh.append(_to_float(train_match.group(1)))
+                train_mae.append(_to_float(train_match.group(2)))
 
-                epoch_step_match = epoch_step_pattern.search(line)
-                epoch = int(epoch_step_match.group(1))
-                step = int(epoch_step_match.group(2))
-                epochs.append(epoch)
-                steps.append(step)
-            
+                epoch_step_match = EPOCH_STEP_PATTERN.search(line)
+                if epoch_step_match:
+                    epochs.append(int(epoch_step_match.group(1)))
+                    steps.append(int(epoch_step_match.group(2)))
+
             if valid_match:
-                valid_geh.append(float(valid_match.group(1)) if valid_match.group(1) != 'nan' else np.nan)
-                valid_mae.append(float(valid_match.group(2)) if valid_match.group(2) != 'nan' else np.nan)
+                valid_geh.append(_to_float(valid_match.group(1)))
+                valid_mae.append(_to_float(valid_match.group(2)))
 
-    # Create a DataFrame
-    df = pd.DataFrame({
-        'epoch': epochs,
-        'step': steps,
-        'train_geh': train_geh,
-        'train_mae': train_mae,
-        'valid_geh': valid_geh,
-        'valid_mae': valid_mae
-    })
-
-    return df
+    return pd.DataFrame(
+        {
+            "epoch": epochs,
+            "step": steps,
+            "train_geh": train_geh,
+            "train_mae": train_mae,
+            "valid_geh": valid_geh,
+            "valid_mae": valid_mae,
+        }
+    )

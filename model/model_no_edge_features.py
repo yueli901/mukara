@@ -1,3 +1,5 @@
+"""Mukara ablation model without explicit edge features."""
+
 import tensorflow as tf
 from tensorflow.keras import layers
 import dgl

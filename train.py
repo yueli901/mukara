@@ -1,10 +1,14 @@
+"""Training entry point for Mukara models."""
+
+import os
 import tensorflow as tf
-# To disable all GPUs
-tf.config.set_visible_devices([], 'GPU')
+
+# Set MUKARA_DISABLE_GPU=1 to force CPU training.
+if os.getenv("MUKARA_DISABLE_GPU", "0") == "1":
+    tf.config.set_visible_devices([], 'GPU')
 
 import numpy as np
 np.set_printoptions(formatter={'float': '{: 0.2f}'.format})
-import os
 import logging
 import datetime
 import random
@@ -23,6 +27,8 @@ random.seed(TRAINING['seed'])
 # Set logging
 # current_time = datetime.datetime.now()
 # formatted_time = current_time.strftime('%Y%m%d-%H%M%S')
+os.makedirs(PATH["param"], exist_ok=True)
+os.makedirs(PATH["evaluate"], exist_ok=True)
 logging.basicConfig(filename=os.path.join(PATH["evaluate"],'training_log.log'), level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s', filemode='w')
 
 # Define a function for the training loop
@@ -55,8 +61,8 @@ def train_model(g, grid_static_features, label, scaler, train_test_index):
                 optimizer.apply_gradients(zip(grads, g.trainable_variables))
 
             # Evaluate model and get the loss as a dictionary
-            train_loss = evaluate_model(g, grid_static_features, scaler, train_test_index)
-            valid_loss = evaluate_model(g, grid_static_features, scaler, ~train_test_index)
+            train_loss = evaluate_model(g, grid_static_features, label, scaler, train_test_index)
+            valid_loss = evaluate_model(g, grid_static_features, label, scaler, ~train_test_index)
 
             train_log_message = f"Epoch {epoch}, Step {step}, Train Loss: " + ", ".join(
                 [f"{key}: {value:.2f}" for key, value in train_loss.items()]
@@ -96,7 +102,7 @@ def compute_loss(label, pred, scaler, train_test_index, loss_function):
 
 
 # Evaluation function remains unchanged
-def evaluate_model(g, grid_static_features, scaler, train_test_index):
+def evaluate_model(g, grid_static_features, label, scaler, train_test_index):
     loss = {metric: 0.0 for metric in TRAINING['eval_metrics']}
     count = 0.0
     for y in range(grid_static_features.shape[0]):  # each year as a step

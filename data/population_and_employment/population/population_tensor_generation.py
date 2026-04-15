@@ -1,10 +1,11 @@
+"""Rasterize population strata to yearly grid tensors."""
+
 import os
 import numpy as np
 import geopandas as gpd
 import pandas as pd
 from tqdm import tqdm
 from joblib import Parallel, delayed
-import gc
 import h5py
 import shutil
 

@@ -1,3 +1,5 @@
+"""Full Mukara model architecture with grid, graph, and edge features."""
+
 import tensorflow as tf
 from tensorflow.keras import layers
 import dgl

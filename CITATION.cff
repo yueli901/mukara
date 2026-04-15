@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the paper below."
+title: "Mukara: a deep learning alternative to the four-step travel demand model with a case study on interurban highway traffic prediction in the UK"
+type: software
+authors:
+  - family-names: Li
+    given-names: Yue
+    affiliation: Martin Centre for Architectural and Urban Studies, University of Cambridge
+  - family-names: Chen
+    given-names: Shujuan
+    affiliation: Martin Centre for Architectural and Urban Studies, University of Cambridge
+  - family-names: Jin
+    given-names: Ying
+    affiliation: Martin Centre for Architectural and Urban Studies, University of Cambridge
+preferred-citation:
+  type: article
+  title: "Mukara: a deep learning alternative to the four-step travel demand model with a case study on interurban highway traffic prediction in the UK"
+  authors:
+    - family-names: Li
+      given-names: Yue
+    - family-names: Chen
+      given-names: Shujuan
+    - family-names: Jin
+      given-names: Ying
+  journal: PLOS ONE
+  year: 2026
+  doi: 10.1371/journal.pone.0345576
+  url: https://doi.org/10.1371/journal.pone.0345576
+  note: "Expected publication date: 16 April 2026"

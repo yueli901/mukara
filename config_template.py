@@ -1,3 +1,5 @@
+"""Template configuration for creating new Mukara experiments."""
+
 PATH = {
     'param': 'param',
     'data': 'data',
@@ -28,16 +30,16 @@ MODEL = {
     'depth_cnn': 3,
     'channels': [16, 32, 64],
     'kernel_size': 3,
-    'strides': 1, 
+    'strides': 1,
     'pool_size': 2,
     'pool_strides': 2,
-    'output_dense': 16, # node embedding size
+    'output_dense': 16,  # node embedding size
     # GAT
     'depth_gat': 5,
-    'input_gat': 16, # node embedding size
-    'output_gat': 16, # node embedding size
+    'input_gat': 16,  # node embedding size
+    'output_gat': 16,  # node embedding size
     'num_heads': 4,
-    }
+}
 
 TRAINING = {
     'seed': 4,
@@ -46,7 +48,7 @@ TRAINING = {
     'step': 7,
     'clip_gradient': 5,
     'train_prop': 0.8,
-    'batch_size': 500, # spatial batch, 500 ensures all sensors of a year in one batch
+    'batch_size': 500,  # spatial batch, 500 ensures all sensors of a year in one batch
     'loss_function': 'GEH',
-    'eval_metrics': ['GEH', 'MAE']
-    }
+    'eval_metrics': ['GEH', 'MAE'],
+}

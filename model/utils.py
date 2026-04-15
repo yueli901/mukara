@@ -1,46 +1,53 @@
+"""Utility functions for scaling, metrics, and dataset splitting."""
+
 import tensorflow as tf
 from config import TRAINING
 
 tf.random.set_seed(TRAINING['seed'])
 
+
 class Scaler:
-	def __init__(self, data):
-		# Ignore NaNs in mean and std calculations
-		valid_data = tf.where(tf.math.is_nan(data), tf.zeros_like(data), data)
-		count = tf.reduce_sum(tf.cast(~tf.math.is_nan(data), tf.float32))
+    """Z-score scaler that preserves NaN values in the data."""
 
-		self.mean = tf.reduce_sum(valid_data) / count
-		self.std = tf.sqrt(tf.reduce_sum(tf.square(valid_data - self.mean)) / count)
+    def __init__(self, data):
+        valid_data = tf.where(tf.math.is_nan(data), tf.zeros_like(data), data)
+        count = tf.reduce_sum(tf.cast(~tf.math.is_nan(data), tf.float32))
 
-		tf.print("Mean:", self.mean, "Standard Deviation:", self.std)
+        self.mean = tf.reduce_sum(valid_data) / count
+        self.std = tf.sqrt(tf.reduce_sum(tf.square(valid_data - self.mean)) / count)
 
-	def transform(self, data):
-		# Standardize data while ignoring NaNs
-		return tf.where(tf.math.is_nan(data), data, (data - self.mean) / (self.std + 1e-8))
-    
-	def inverse_transform(self, data):
-		# Reverse standardization while ignoring NaNs
-		return tf.where(tf.math.is_nan(data), data, data * self.std + self.mean)
+        tf.print("Mean:", self.mean, "Standard Deviation:", self.std)
+
+    def transform(self, data):
+        """Standardize data while keeping NaN entries unchanged."""
+        return tf.where(tf.math.is_nan(data), data, (data - self.mean) / (self.std + 1e-8))
+
+    def inverse_transform(self, data):
+        """Convert standardized data back to the original scale."""
+        return tf.where(tf.math.is_nan(data), data, data * self.std + self.mean)
 
 
 def MSE_z(label_z, pred_z, scaler):
-	return tf.reduce_mean(tf.square(label_z - pred_z))
+    return tf.reduce_mean(tf.square(label_z - pred_z))
+
 
 def MAE(label_z, pred_z, scaler):
-	pred = scaler.inverse_transform(pred_z)
-	label = scaler.inverse_transform(label_z)
-	return tf.reduce_mean(tf.abs(label - pred))
+    pred = scaler.inverse_transform(pred_z)
+    label = scaler.inverse_transform(label_z)
+    return tf.reduce_mean(tf.abs(label - pred))
+
 
 def MSE(label_z, pred_z, scaler):
-	pred = scaler.inverse_transform(pred_z)
-	label = scaler.inverse_transform(label_z)
-	return tf.reduce_mean(tf.square(label - pred))
+    pred = scaler.inverse_transform(pred_z)
+    label = scaler.inverse_transform(label_z)
+    return tf.reduce_mean(tf.square(label - pred))
+
 
 def GEH(label_z, pred_z, scaler):
-	pred = scaler.inverse_transform(pred_z)
-	label = scaler.inverse_transform(label_z)
-	gehs = tf.sqrt(2 * tf.square(pred - label) / (tf.abs(pred) + label + 1e-8)) # pred for small volume sensors can be negative
-	return tf.reduce_mean(gehs)
+    pred = scaler.inverse_transform(pred_z)
+    label = scaler.inverse_transform(label_z)
+    gehs = tf.sqrt(2 * tf.square(pred - label) / (tf.abs(pred) + label + 1e-8))  # pred for low-volume sensors can be negative
+    return tf.reduce_mean(gehs)
 
 
 def train_test_sampler(shape, true_probability):

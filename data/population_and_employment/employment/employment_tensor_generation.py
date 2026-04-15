@@ -1,3 +1,5 @@
+"""Rasterize employment strata to yearly grid tensors."""
+
 import os
 import numpy as np
 import h5py
@@ -6,7 +8,6 @@ import geopandas as gpd
 import pandas as pd
 from tqdm import tqdm
 from joblib import Parallel, delayed
-import gc
 
 # Paths to input files and folders
 GRID_FILE = '../grid_1km_653_573/grid_cells.shp'

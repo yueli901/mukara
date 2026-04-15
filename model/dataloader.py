@@ -1,3 +1,5 @@
+"""Data loading helpers for Mukara model training and inference."""
+
 import tensorflow as tf
 import h5py
 import os
@@ -14,15 +16,11 @@ tf.random.set_seed(TRAINING['seed'])
 random.seed(TRAINING['seed'])
 
 def adjacency_matrix():
-	"""
-	Output two lists, both are node index, paired to each other.
-	"""
-	sensor_data = pd.read_csv(os.path.join(PATH["data"], PATH["edge_features"]))
-	src = sensor_data["Origin"].to_list()
-	# src = [x - 1 for x in src]
-	dst = sensor_data["Destination"].to_list()
-	# dst = [x - 1 for x in dst]
-	return src, dst
+    """Return source and destination node indices for graph construction."""
+    sensor_data = pd.read_csv(os.path.join(PATH["data"], PATH["edge_features"]))
+    src = sensor_data["Origin"].to_list()
+    dst = sensor_data["Destination"].to_list()
+    return src, dst
 
 
 # def sensor_index():
@@ -68,18 +66,18 @@ def get_static_features():
     z-score normalize
     return grid static feature (year=8, height, width, c=14)
     """
-    with h5py.File(os.path.join(PATH["data"], PATH["population_and_employment"]), 'r') as f:  
+    with h5py.File(os.path.join(PATH["data"], PATH["population_and_employment"]), 'r') as f:
         pe = f['features'][..., [item for sublist in [DATA['population'], DATA['employment']] for item in sublist]]
     year, row, col, c = pe.shape
     pe = np.reshape(pe, (year * row * col, -1))
-    pe = (pe - np.mean(pe, axis=0)) / (np.std(pe, axis=0) + 1e-8)	
+    pe = (pe - np.mean(pe, axis=0)) / (np.std(pe, axis=0) + 1e-8)
     pe = np.reshape(pe, (year, row, col, -1))
     pe = tf.convert_to_tensor(pe, dtype=tf.float32)
 
     with h5py.File(os.path.join(PATH["data"], PATH["landuse_and_poi"]), "r") as h5f:
         lp = h5f["features"][..., [item for item in DATA['landuse_poi']]]
     lp = np.reshape(lp, (row * col, -1))
-    lp = (lp - np.mean(lp, axis=0)) / (np.std(lp, axis=0) + 1e-8)	
+    lp = (lp - np.mean(lp, axis=0)) / (np.std(lp, axis=0) + 1e-8)
     lp = np.reshape(lp, (row, col, -1))
     lp = tf.convert_to_tensor(lp, dtype=tf.float32)
     lp = tf.broadcast_to(lp, (year, row, col, lp.shape[-1]))
@@ -100,9 +98,9 @@ def get_edge_features():
 
 
 def get_gt():
-	"""average daily traffic volume, shape (8, 498), z-score normalize"""
-	with h5py.File(os.path.join(PATH["data"], PATH["ground_truth"]), 'r') as f:  
-		data = f['data'][:]
-	scaler = Scaler(data)
-	data_normalized = scaler.transform(data)
-	return data_normalized, scaler
+    """Load and z-score normalise average daily traffic volumes (shape: 8 x 498)."""
+    with h5py.File(os.path.join(PATH["data"], PATH["ground_truth"]), 'r') as f:
+        data = f['data'][:]
+    scaler = Scaler(data)
+    data_normalized = scaler.transform(data)
+    return data_normalized, scaler
