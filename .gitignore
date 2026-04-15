@@ -59,4 +59,4 @@ manuscript/*.toc
 config_template_hyperparams.py
 *.png
 !manuscript/mukara.png
-!manuscript/framework.pdf
+!manuscript/framework.png
