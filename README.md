@@ -1,6 +1,6 @@
 # Mukara: A Deep Learning Alternative to the Four-Step Travel Demand Model
 
-![High-resolution PDF version of the framework figure](manuscript/framework.pdf)
+![framework](manuscript/framework.png)
 
 This repository contains the TensorFlow + DGL implementation of **Mukara**, a deep learning framework for interurban highway traffic volume prediction using external socioeconomic and network features.
 
